@@ -1,5 +1,21 @@
 import pickle, sys
 from GoogleNews import GoogleNews
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+
+
+def get_soup(link):
+	url = link
+	page = urlopen(url)
+	html = page.read().decode("utf-8")
+	soup = BeautifulSoup(html, "html.parser")
+
+	soup_split = soup.get_text().split()
+	if(soup_split[0] == 'Google' and soup_split[1] == 'News'):
+		for word in soup_split:
+			if "http" in word and "CloseSearchClear" in word:
+				return get_soup(word.replace("CloseSearchClear", ""))
+	return soup
 
 
 def initialize(search):
@@ -31,7 +47,7 @@ def initialize(search):
 # print (sys.getrecursionlimit())
 
 search = 'bitcoin'
-googlenews = initialize(search)
+# googlenews = initialize(search)
 
 
 # with open(search, 'rb') as file:
@@ -46,11 +62,41 @@ googlenews = initialize(search)
 # 	print(title)
 
 # print(googlenews.total_count())
-i = 1
-st = ""
-for res in googlenews.results():
-	# st += str(i) +" "
-	st += res['site'] +": "+ res['title'] +"\n"
-	# i += 1
 
-print(st)
+# i = 1
+# st = ""
+# for res in googlenews.results():
+# 	# st += str(i) +" "
+# 	# st += res['site'] +": "+ res['title'] +"\n"
+# 	st += res['title'] +": "+ res['link'] +"\n"
+# 	# i += 1
+
+# print(st)
+
+
+url = "https://news.google.com/./articles/CAIiEAVez1rX28izq9CLKm3JUGQqMwgEKioIACIQVUfMNPchx9tcFFSwReSP7CoUCAoiEFVHzDT3IcfbXBRUsEXkj-wwkeKnBw?uo=CAUiemh0dHBzOi8vd3d3LmNvaW5kZXNrLmNvbS9idXNpbmVzcy8yMDIyLzA2LzAzL21pZGRsZS1lYXN0LW9pbC1wcm9kdWNlcnMtbW92ZS1pbnRvLWJpdGNvaW4tbWluaW5nLXdpdGgtY3J1c29lLWVuZ"
+
+soup = get_soup(url)
+print(soup.get_text())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
